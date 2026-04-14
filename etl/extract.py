@@ -28,11 +28,10 @@ def extract_observations():
     chunks = []
     vitals_codes = {
         '8867-4',   # heart rate
-        '55284-4',  # blood pressure
-        '8310-5',   # body temperature
-        '59408-5',  # oxygen saturation
         '8480-6',   # systolic BP
         '8462-4',   # diastolic BP
+        '8310-5',   # body temperature
+        '2708-6',   # oxygen saturation
     }
     for chunk in pd.read_csv(
         get_csv_path('observations.csv'),
