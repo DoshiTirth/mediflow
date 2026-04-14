@@ -28,6 +28,7 @@ ml/model/*.pt
 ml/model/*.bin
 
 # ─── Synthea Data (generated CSVs, not committed) ─────
+data_generation/output/
 data_generation/*.csv
 data_generation/*.json
 data_generation/*.ndjson
