@@ -12,16 +12,17 @@ export default function Anomalies() {
   const [loading,   setLoading]   = useState(true);
   const [explaining, setExplaining] = useState(null);
   const [explanations, setExplanations] = useState({});
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     setLoading(true);
-    getAnomalies({ page, per_page: 20, severity })
+    getAnomalies({ page, per_page: 20, severity, search })
       .then(res => {
         setAnomalies(res.data.anomalies);
         setTotal(res.data.total);
         setLoading(false);
       });
-  }, [page, severity]);
+  }, [page, severity, search]);
 
   const handleExplain = async (anomalyId) => {
     if (explanations[anomalyId]) return;
@@ -48,6 +49,39 @@ export default function Anomalies() {
       <TopBar title="Anomalies" subtitle={`${total.toLocaleString()} DETECTED`} />
 
       <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem' }}>
+
+        {/* Search */}
+        <div style={{ marginBottom: '0.75rem', animation: 'fade-up 0.4s ease both' }}>
+          <div style={{ position: 'relative', maxWidth: 360 }}>
+            <svg style={{
+              position: 'absolute', left: 10, top: '50%',
+              transform: 'translateY(-50%)', pointerEvents: 'none',
+            }} width="14" height="14" viewBox="0 0 24 24" fill="none"
+              stroke="var(--text-muted)" strokeWidth="2">
+              <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+            </svg>
+            <input
+              type="text"
+              placeholder="Search by patient name..."
+              value={search}
+              onChange={e => { setSearch(e.target.value); setPage(1); }}
+              style={{
+                width:        '100%',
+                padding:      '9px 12px 9px 32px',
+                borderRadius: 'var(--radius-md)',
+                border:       '0.5px solid var(--border)',
+                background:   'var(--bg-surface)',
+                color:        'var(--text-primary)',
+                fontSize:     13,
+                fontFamily:   'var(--font-body)',
+                outline:      'none',
+                transition:   'border-color 0.2s ease',
+              }}
+              onFocus={e => e.target.style.borderColor = 'var(--accent)'}
+              onBlur={e  => e.target.style.borderColor = 'var(--border)'}
+            />
+          </div>
+        </div>
 
         {/* Filter tabs */}
         <div style={{

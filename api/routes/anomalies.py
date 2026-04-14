@@ -20,13 +20,21 @@ def get_anomalies():
     page     = int(request.args.get('page', 1))
     per_page = int(request.args.get('per_page', 20))
     severity = request.args.get('severity', '').strip()
+    search   = request.args.get('search', '').strip()
     offset   = (page - 1) * per_page
 
-    severity_filter = "AND a.severity = ?" if severity else ""
     unknown_filter  = "AND a.affected_metric != 'unknown'"
+    severity_filter = "AND a.severity = ?" if severity else ""
+    search_filter   = "AND (p.first_name LIKE ? OR p.last_name LIKE ?)" if search else ""
 
-    data_params  = [severity, offset, per_page] if severity else [offset, per_page]
-    count_params = [severity] if severity else []
+    data_params = []
+    if severity: data_params.append(severity)
+    if search:   data_params.extend([f'%{search}%', f'%{search}%'])
+    data_params.extend([offset, per_page])
+
+    count_params = []
+    if severity: count_params.append(severity)
+    if search:   count_params.extend([f'%{search}%', f'%{search}%'])
 
     rows = fetch_all(f"""
         SELECT
@@ -43,7 +51,7 @@ def get_anomalies():
             a.is_reviewed
         FROM anomalies a
         JOIN patients p ON a.patient_id = p.patient_id
-        WHERE 1=1 {unknown_filter} {severity_filter}
+        WHERE 1=1 {unknown_filter} {severity_filter} {search_filter}
         ORDER BY a.detected_at DESC
         OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
     """, data_params)
@@ -56,7 +64,8 @@ def get_anomalies():
     total = fetch_one(f"""
         SELECT COUNT(*) as total
         FROM anomalies a
-        WHERE 1=1 {unknown_filter} {severity_filter}
+        JOIN patients p ON a.patient_id = p.patient_id
+        WHERE 1=1 {unknown_filter} {severity_filter} {search_filter}
     """, count_params)['total']
 
     return jsonify({
