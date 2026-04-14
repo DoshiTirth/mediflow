@@ -22,10 +22,9 @@ function CustomTooltip({ active, payload, label }) {
           justifyContent: 'space-between',
           gap:            16,
           marginBottom:   4,
-          color:          p.color,
         }}>
           <span style={{ color: 'var(--text-secondary)', textTransform: 'capitalize' }}>{p.dataKey}</span>
-          <span style={{ fontWeight: 700 }}>{p.value}</span>
+          <span style={{ fontWeight: 700, color: p.color }}>{p.value}</span>
         </div>
       ))}
     </div>
@@ -33,7 +32,6 @@ function CustomTooltip({ active, payload, label }) {
 }
 
 export default function TrendsChart({ data }) {
-  // pivot rows into { month, critical, warning, low }
   const map = {};
   data.forEach(row => {
     if (!map[row.month]) map[row.month] = { month: row.month, critical: 0, warning: 0, low: 0 };
@@ -82,11 +80,11 @@ export default function TrendsChart({ data }) {
           )}
         />
         <Area type="monotone" dataKey="critical" stroke="#E24B4A" strokeWidth={1.8}
-          fill="url(#gradCritical)" dot={false} animationDuration={1500}/>
+          fill="url(#gradCritical)" dot={false} animationDuration={1200}/>
         <Area type="monotone" dataKey="warning"  stroke="#EF9F27" strokeWidth={1.8}
-          fill="url(#gradWarning)" dot={false} animationDuration={1500}/>
+          fill="url(#gradWarning)" dot={false} animationDuration={1200}/>
         <Area type="monotone" dataKey="low"      stroke="#1D9E75" strokeWidth={1.8}
-          fill="url(#gradLow)" dot={false} animationDuration={1500}/>
+          fill="url(#gradLow)" dot={false} animationDuration={1200}/>
       </AreaChart>
     </ResponsiveContainer>
   );

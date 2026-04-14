@@ -186,15 +186,33 @@ def patient_summary(patient_id):
 
 @anomalies_bp.route('/anomalies/trends', methods=['GET'])
 def get_anomaly_trends():
-    rows = fetch_all("""
+    period = request.args.get('period', 'monthly').strip()
+
+    if period == 'daily':
+        date_format = 'yyyy-MM-dd'
+        date_filter = "WHERE v.recorded_at >= DATEADD(DAY, -60, (SELECT MAX(recorded_at) FROM vitals))"
+    elif period == 'weekly':
+        date_format = 'yyyy-WW'
+        date_filter = "WHERE v.recorded_at >= DATEADD(WEEK, -24, (SELECT MAX(recorded_at) FROM vitals))"
+    elif period == 'sixmonths':
+        date_format = 'yyyy-MM'
+        date_filter = "WHERE v.recorded_at >= DATEADD(MONTH, -18, (SELECT MAX(recorded_at) FROM vitals))"
+    elif period == 'yearly':
+        date_format = 'yyyy'
+        date_filter = "WHERE v.recorded_at >= DATEADD(YEAR, -20, (SELECT MAX(recorded_at) FROM vitals))"
+    else:
+        date_format = 'yyyy-MM'
+        date_filter = "WHERE v.recorded_at >= DATEADD(YEAR, -10, (SELECT MAX(recorded_at) FROM vitals))"
+
+    rows = fetch_all(f"""
         SELECT
-            FORMAT(v.recorded_at, 'yyyy-MM') as month,
+            FORMAT(v.recorded_at, '{date_format}') as month,
             a.severity,
             COUNT(*) as count
         FROM anomalies a
         JOIN vitals v ON a.vital_id = v.vital_id
-        WHERE v.recorded_at >= DATEADD(YEAR, -10, GETDATE())
-        GROUP BY FORMAT(v.recorded_at, 'yyyy-MM'), a.severity
+        {date_filter}
+        GROUP BY FORMAT(v.recorded_at, '{date_format}'), a.severity
         ORDER BY month ASC
     """)
-    return jsonify({'trends': rows})
+    return jsonify({'trends': rows, 'period': period})

@@ -15,6 +15,7 @@ export default function Dashboard() {
   const [stats,    setStats]    = useState(null);
   const [loading,  setLoading]  = useState(true);
   const [trends, setTrends] = useState([]);
+  const [trendPeriod, setTrendPeriod] = useState('monthly');
 
   useEffect(() => {
     Promise.all([
@@ -30,6 +31,10 @@ export default function Dashboard() {
       setLoading(false);
     });
   }, []);
+
+  useEffect(() => {
+    getAnomalyTrends(trendPeriod).then(res => setTrends(res.data.trends));
+  }, [trendPeriod]);
 
   const critical = summary?.by_severity?.find(s => s.severity === 'critical')?.count || 0;
   const warning  = summary?.by_severity?.find(s => s.severity === 'warning')?.count  || 0;
@@ -308,6 +313,7 @@ export default function Dashboard() {
                 })}
               </div>
             </div>
+            
             {/* Anomaly trends */}
             {trends.length > 0 && (
               <div className="card" style={{
@@ -319,22 +325,43 @@ export default function Dashboard() {
                   justifyContent: 'space-between',
                   alignItems:     'center',
                   marginBottom:   '1rem',
+                  flexWrap:       'wrap',
+                  gap:            8,
                 }}>
                   <div style={{
                     fontFamily: 'var(--font-display)',
                     fontWeight: 700,
                     fontSize:   14,
                     color:      'var(--text-primary)',
-                  }}>Anomaly Trends — Last 10 Years</div>
-                  <span style={{
-                    fontSize:     11,
-                    fontFamily:   'var(--font-mono)',
-                    color:        'var(--text-muted)',
-                    background:   'var(--bg-surface2)',
-                    padding:      '3px 10px',
-                    borderRadius: 'var(--radius-sm)',
-                    border:       '0.5px solid var(--border)',
-                  }}>Monthly</span>
+                  }}>Anomaly Trends</div>
+            
+                  {/* Period filters */}
+                  <div style={{ display: 'flex', gap: 6 }}>
+                    {[
+                      { key: 'daily',     label: 'Daily'     },
+                      { key: 'weekly',    label: 'Weekly'    },
+                      { key: 'monthly',   label: 'Monthly'   },
+                      { key: 'sixmonths', label: '6 Months'  },
+                      { key: 'yearly',    label: 'Yearly'    },
+                    ].map(p => (
+                      <button
+                        key={p.key}
+                        onClick={() => setTrendPeriod(p.key)}
+                        style={{
+                          padding:      '4px 12px',
+                          borderRadius: 'var(--radius-sm)',
+                          border:       '0.5px solid var(--border)',
+                          background:   trendPeriod === p.key ? 'var(--accent)' : 'var(--bg-surface2)',
+                          color:        trendPeriod === p.key ? '#fff' : 'var(--text-secondary)',
+                          fontSize:     11,
+                          fontFamily:   'var(--font-mono)',
+                          cursor:       'pointer',
+                          transition:   'all 0.2s ease',
+                          fontWeight:   trendPeriod === p.key ? 600 : 400,
+                        }}
+                      >{p.label}</button>
+                    ))}
+                  </div>
                 </div>
                 <TrendsChart data={trends} />
               </div>

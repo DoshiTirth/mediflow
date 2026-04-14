@@ -14,6 +14,6 @@ export const getAnomalySummary = ()       => api.get('/anomalies/summary');
 export const explainAnomaly    = (id)     => api.post(`/anomalies/${id}/explain`);
 export const markReviewed      = (id)     => api.patch(`/anomalies/${id}/review`);
 export const getVitalsStats    = ()       => api.get('/vitals/stats');
-export const getAnomalyTrends = () => api.get('/anomalies/trends');
+export const getAnomalyTrends = (period = 'monthly') => api.get('/anomalies/trends', { params: { period } });
 
 export default api;
