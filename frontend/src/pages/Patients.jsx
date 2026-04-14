@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import TopBar from '../components/layout/TopBar';
 import PatientCard from '../components/ui/PatientCard';
 import { getPatients } from '../api';
+import { SkeletonPatientCard } from '../components/ui/Skeleton';
 
 export default function Patients() {
   const navigate          = useNavigate();
@@ -63,8 +64,8 @@ export default function Patients() {
 
         {/* Patient list */}
         {loading ? (
-          <div style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', fontSize: 12 }}>
-            Loading patients...
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {[1,2,3,4,5,6,7,8].map(i => <SkeletonPatientCard key={i} />)}
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>

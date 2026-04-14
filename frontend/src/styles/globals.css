@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap');
 
-/* ─── Light Mode (Default) ───────────────────────────── */
+/* Light Mode (Default) */
 :root {
   --bg-primary:        #f0f4f8;
   --bg-surface:        #ffffff;
@@ -40,7 +40,7 @@
   --topbar-height:     60px;
 }
 
-/* ─── Dark Mode ──────────────────────────────────────── */
+/* Dark Mode */
 [data-theme='dark'] {
   --bg-primary:        #0d1117;
   --bg-surface:        #161b22;
@@ -60,7 +60,7 @@
   --shadow-elevated:   0 4px 16px rgba(0,0,0,0.5);
 }
 
-/* ─── Reset ──────────────────────────────────────────── */
+/* Reset */
 *, *::before, *::after {
   margin: 0; padding: 0; box-sizing: border-box;
 }
@@ -80,7 +80,7 @@ html, body, #root {
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-faint); }
 
-/* ─── Keyframe Animations ────────────────────────────── */
+/* Keyframe Animations */
 @keyframes ecg-scroll {
   0%   { stroke-dashoffset: 1000; }
   100% { stroke-dashoffset: 0; }
@@ -139,7 +139,7 @@ html, body, #root {
   to   { stroke-dashoffset: 0; }
 }
 
-/* ─── Utility Classes ────────────────────────────────── */
+/* Utility Classes */
 .animate-fade-up  { animation: fade-up 0.5s ease forwards; }
 .animate-slide-in { animation: slide-in-left 0.4s ease forwards; }
 
@@ -189,3 +189,9 @@ html, body, #root {
 [data-theme='dark'] .badge-warning  { color: #FAC775; }
 [data-theme='dark'] .badge-low      { color: #5DCAA5; }
 [data-theme='dark'] .badge-normal   { color: #5DCAA5; }
+
+/* Skeleton Shimmer */
+@keyframes skeleton-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

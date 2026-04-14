@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import TopBar from '../components/layout/TopBar';
 import AnomalyBadge from '../components/ui/AnomalyBadge';
 import { getAnomalies, explainAnomaly, markReviewed } from '../api';
+import { SkeletonAnomalyCard } from '../components/ui/Skeleton';
 
 export default function Anomalies() {
   const [anomalies, setAnomalies] = useState([]);
@@ -80,8 +81,8 @@ export default function Anomalies() {
 
         {/* Anomaly list */}
         {loading ? (
-          <div style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', fontSize: 12 }}>
-            Loading anomalies...
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {[1,2,3,4,5].map(i => <SkeletonAnomalyCard key={i} />)}
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>

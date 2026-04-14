@@ -5,6 +5,7 @@ import StatCard from '../components/ui/StatCard';
 import AnomalyBadge from '../components/ui/AnomalyBadge';
 import PulseRing from '../components/animations/PulseRing';
 import { getAnomalySummary, getPatients, getVitalsStats } from '../api';
+import { SkeletonStatCard, SkeletonCard,} from '../components/ui/Skeleton';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -30,6 +31,26 @@ export default function Dashboard() {
   const warning  = summary?.by_severity?.find(s => s.severity === 'warning')?.count  || 0;
   const low      = summary?.by_severity?.find(s => s.severity === 'low')?.count      || 0;
 
+  if (loading) return (
+  <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+    <TopBar title="Dashboard" subtitle="CLINICAL OVERVIEW" />
+    <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem' }}>
+      <div style={{
+        display:             'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+        gap:                 12,
+        marginBottom:        '1.5rem',
+      }}>
+        {[1,2,3,4].map(i => <SkeletonStatCard key={i} />)}
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+        <SkeletonCard style={{ height: 220 }}><div/></SkeletonCard>
+        <SkeletonCard style={{ height: 220 }}><div/></SkeletonCard>
+        <SkeletonCard style={{ gridColumn: '1 / -1', height: 160 }}><div/></SkeletonCard>
+      </div>
+    </div>
+  </div>
+);
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <TopBar title="Dashboard" subtitle="CLINICAL OVERVIEW" />

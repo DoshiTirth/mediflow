@@ -4,6 +4,7 @@ import TopBar from '../components/layout/TopBar';
 import VitalsChart from '../components/charts/VitalsChart';
 import AnomalyBadge from '../components/ui/AnomalyBadge';
 import { getPatient, getPatientVitals, getAnomalies, explainAnomaly, getPatientSummary, markReviewed } from '../api';
+import { SkeletonPatientHeader, SkeletonChartCard, SkeletonAnomalyCard, } from '../components/ui/Skeleton';
 
 export default function PatientDetail() {
   const { id }       = useParams();
@@ -60,8 +61,19 @@ export default function PatientDetail() {
   };
 
   if (loading) return (
-    <div style={{ padding: '2rem', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', fontSize: 12 }}>
-      Loading patient data...
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <TopBar title="Patient Detail" subtitle="LOADING..." />
+      <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem' }}>
+        <div style={{ marginBottom: '1rem' }}>
+          <SkeletonPatientHeader />
+        </div>
+        <div style={{ marginBottom: '1rem' }}>
+          <SkeletonChartCard />
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {[1,2,3].map(i => <SkeletonAnomalyCard key={i} />)}
+        </div>
+      </div>
     </div>
   );
 
