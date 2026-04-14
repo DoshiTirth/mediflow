@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Sidebar from './components/layout/Sidebar';
 import Dashboard from './pages/Dashboard';
 import Patients from './pages/Patients';
+import PatientDetail from './pages/PatientDetail';
 import Anomalies from './pages/Anomalies';
 import './styles/globals.css';
 
@@ -30,6 +31,7 @@ export default function App() {
             <Route path="/"          element={<Dashboard />} />
             <Route path="/patients"  element={<Patients />} />
             <Route path="/anomalies" element={<Anomalies />} />
+            <Route path="/patients/:id" element={<PatientDetail />} />
           </Routes>
         </main>
       </div>
