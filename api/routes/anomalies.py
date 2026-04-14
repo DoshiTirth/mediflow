@@ -23,7 +23,10 @@ def get_anomalies():
     offset   = (page - 1) * per_page
 
     severity_filter = "AND a.severity = ?" if severity else ""
-    params = [severity, offset, per_page] if severity else [offset, per_page]
+    unknown_filter  = "AND a.affected_metric != 'unknown'"
+
+    data_params  = [severity, offset, per_page] if severity else [offset, per_page]
+    count_params = [severity] if severity else []
 
     rows = fetch_all(f"""
         SELECT
@@ -40,20 +43,20 @@ def get_anomalies():
             a.is_reviewed
         FROM anomalies a
         JOIN patients p ON a.patient_id = p.patient_id
-        WHERE 1=1 {severity_filter}
+        WHERE 1=1 {unknown_filter} {severity_filter}
         ORDER BY a.detected_at DESC
         OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
-    """, params)
+    """, data_params)
 
     for row in rows:
         if row.get('detected_at'):
             row['detected_at'] = str(row['detected_at'])
         row['is_reviewed'] = bool(row.get('is_reviewed'))
 
-    count_params = [severity] if severity else []
     total = fetch_one(f"""
-        SELECT COUNT(*) as total FROM anomalies
-        WHERE 1=1 {severity_filter}
+        SELECT COUNT(*) as total
+        FROM anomalies a
+        WHERE 1=1 {unknown_filter} {severity_filter}
     """, count_params)['total']
 
     return jsonify({
@@ -171,3 +174,18 @@ def patient_summary(patient_id):
     summary = get_patient_summary(patient, anomalies, vitals)
 
     return jsonify({'summary': summary, 'patient_id': patient_id})
+
+@anomalies_bp.route('/anomalies/trends', methods=['GET'])
+def get_anomaly_trends():
+    rows = fetch_all("""
+        SELECT
+            FORMAT(v.recorded_at, 'yyyy-MM') as month,
+            a.severity,
+            COUNT(*) as count
+        FROM anomalies a
+        JOIN vitals v ON a.vital_id = v.vital_id
+        WHERE v.recorded_at >= DATEADD(YEAR, -10, GETDATE())
+        GROUP BY FORMAT(v.recorded_at, 'yyyy-MM'), a.severity
+        ORDER BY month ASC
+    """)
+    return jsonify({'trends': rows})

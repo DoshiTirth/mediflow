@@ -86,7 +86,9 @@ export default function Anomalies() {
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            {anomalies.map((a, i) => (
+            {anomalies
+              .filter(a => a.affected_metric && a.affected_metric !== 'unknown')
+              .map((a, i) => (
               <div
                 key={a.anomaly_id}
                 className="card"
