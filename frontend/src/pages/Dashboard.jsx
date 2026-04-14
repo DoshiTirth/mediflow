@@ -4,8 +4,9 @@ import TopBar from '../components/layout/TopBar';
 import StatCard from '../components/ui/StatCard';
 import AnomalyBadge from '../components/ui/AnomalyBadge';
 import PulseRing from '../components/animations/PulseRing';
-import { getAnomalySummary, getPatients, getVitalsStats } from '../api';
+import { getAnomalySummary, getPatients, getVitalsStats, getAnomalyTrends } from '../api';
 import { SkeletonStatCard, SkeletonCard,} from '../components/ui/Skeleton';
+import TrendsChart from '../components/charts/TrendsChart';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -13,16 +14,19 @@ export default function Dashboard() {
   const [patients, setPatients] = useState(null);
   const [stats,    setStats]    = useState(null);
   const [loading,  setLoading]  = useState(true);
+  const [trends, setTrends] = useState([]);
 
   useEffect(() => {
     Promise.all([
       getAnomalySummary(),
       getPatients({ per_page: 5 }),
       getVitalsStats(),
-    ]).then(([s, p, v]) => {
+      getAnomalyTrends(),
+    ]).then(([s, p, v, t]) => {
       setSummary(s.data);
       setPatients(p.data);
       setStats(v.data);
+      setTrends(t.data.trends);
       setLoading(false);
     });
   }, []);
@@ -304,6 +308,37 @@ export default function Dashboard() {
                 })}
               </div>
             </div>
+            {/* Anomaly trends */}
+            {trends.length > 0 && (
+              <div className="card" style={{
+                gridColumn: '1 / -1',
+                animation:  'fade-up 0.5s ease 0.7s both',
+              }}>
+                <div style={{
+                  display:        'flex',
+                  justifyContent: 'space-between',
+                  alignItems:     'center',
+                  marginBottom:   '1rem',
+                }}>
+                  <div style={{
+                    fontFamily: 'var(--font-display)',
+                    fontWeight: 700,
+                    fontSize:   14,
+                    color:      'var(--text-primary)',
+                  }}>Anomaly Trends — Last 10 Years</div>
+                  <span style={{
+                    fontSize:     11,
+                    fontFamily:   'var(--font-mono)',
+                    color:        'var(--text-muted)',
+                    background:   'var(--bg-surface2)',
+                    padding:      '3px 10px',
+                    borderRadius: 'var(--radius-sm)',
+                    border:       '0.5px solid var(--border)',
+                  }}>Monthly</span>
+                </div>
+                <TrendsChart data={trends} />
+              </div>
+            )}
           </div>
         </div>
       </div>
