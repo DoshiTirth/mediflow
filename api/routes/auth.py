@@ -3,6 +3,8 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 from api.services.db import fetch_one
 from datetime import timedelta
 import bcrypt
+from api.services.logger import get_logger
+logger = get_logger('mediflow.auth')
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -18,14 +20,15 @@ def login():
 
     user = fetch_one("""
         SELECT user_id, username, password, full_name, role, is_active
-        FROM users
-        WHERE username = ?
+        FROM users WHERE username = ?
     """, [username])
 
     if not user:
+        logger.warning(f'Failed login attempt — username: {username} not found')
         return jsonify({'error': 'Invalid credentials'}), 401
 
     if not user['is_active']:
+        logger.warning(f'Login attempt for deactivated account: {username}')
         return jsonify({'error': 'Account is deactivated'}), 401
 
     password_match = bcrypt.checkpw(
@@ -34,14 +37,17 @@ def login():
     )
 
     if not password_match:
+        logger.warning(f'Failed login attempt — wrong password for: {username}')
         return jsonify({'error': 'Invalid credentials'}), 401
+
+    logger.info(f'Successful login — {username} ({user["role"]})')
 
     token = create_access_token(
         identity=username,
         additional_claims={
-            'role':     user['role'],
-            'name':     user['full_name'],
-            'user_id':  user['user_id'],
+            'role':    user['role'],
+            'name':    user['full_name'],
+            'user_id': user['user_id'],
         },
         expires_delta=timedelta(hours=8)
     )
@@ -52,7 +58,6 @@ def login():
         'name':     user['full_name'],
         'role':     user['role'],
     })
-
 
 @auth_bp.route('/auth/me', methods=['GET'])
 @jwt_required()
