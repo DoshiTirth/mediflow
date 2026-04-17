@@ -2,7 +2,9 @@ from flask import Blueprint, jsonify, request
 from api.services.db import fetch_all, fetch_one, execute
 from api.services.ai import explain_anomaly, get_patient_summary
 from datetime import date
+import os
 from flask_jwt_extended import jwt_required
+from flask_jwt_extended import get_jwt
 
 anomalies_bp = Blueprint('anomalies', __name__)
 
@@ -223,3 +225,35 @@ def get_anomaly_trends():
         ORDER BY month ASC
     """)
     return jsonify({'trends': rows, 'period': period})
+
+@anomalies_bp.route('/model/retrain', methods=['POST'])
+@jwt_required()
+def retrain_model():
+    claims = get_jwt()
+    if claims.get('role') != 'admin':
+        return jsonify({'error': 'Admin access required'}), 403
+
+    import subprocess
+    import sys
+
+    try:
+        result = subprocess.run(
+            [sys.executable, 'ml/train.py'],
+            capture_output=True,
+            text=True,
+            cwd=os.path.join(os.path.dirname(__file__), '..', '..')
+        )
+        if result.returncode == 0:
+            return jsonify({
+                'status':  'success',
+                'message': 'Model retrained successfully',
+                'output':  result.stdout
+            })
+        else:
+            return jsonify({
+                'status': 'error',
+                'message': 'Retraining failed',
+                'output':  result.stderr
+            }), 500
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500

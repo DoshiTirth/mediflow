@@ -36,5 +36,6 @@ export const getAnomalyTrends  = (period)      => api.get('/anomalies/trends', {
 export const explainAnomaly    = (id)          => api.post(`/anomalies/${id}/explain`);
 export const markReviewed      = (id)          => api.patch(`/anomalies/${id}/review`);
 export const getVitalsStats    = ()            => api.get('/vitals/stats');
+export const retrainModel      = ()            => api.post('/model/retrain');
 
 export default api;

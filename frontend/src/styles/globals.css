@@ -139,6 +139,17 @@ html, body, #root {
   to   { stroke-dashoffset: 0; }
 }
 
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes progress-indeterminate {
+  0%   { width: 0%;   margin-left: 0%; }
+  50%  { width: 60%;  margin-left: 20%; }
+  100% { width: 0%;   margin-left: 100%; }
+}
+
 /* Utility Classes */
 .animate-fade-up  { animation: fade-up 0.5s ease forwards; }
 .animate-slide-in { animation: slide-in-left 0.4s ease forwards; }
