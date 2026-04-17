@@ -37,5 +37,10 @@ export const explainAnomaly    = (id)          => api.post(`/anomalies/${id}/exp
 export const markReviewed      = (id)          => api.patch(`/anomalies/${id}/review`);
 export const getVitalsStats    = ()            => api.get('/vitals/stats');
 export const retrainModel      = ()            => api.post('/model/retrain');
+export const exportAnomaliesCSV = (severity = '') => api.get('/reports/export/anomalies/csv', { params: { severity }, responseType: 'blob' });
+export const exportPatientsCSV  = ()           => api.get('/reports/export/patients/csv', { responseType: 'blob' });
+export const exportPDF          = ()           => api.get('/reports/export/pdf', { responseType: 'blob' });
+export const previewAnomalies   = (severity = '') => api.get('/reports/preview/anomalies', { params: { severity } });
+export const previewPatients    = ()           => api.get('/reports/preview/patients');
 
 export default api;

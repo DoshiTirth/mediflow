@@ -9,6 +9,7 @@ import PatientDetail from './pages/PatientDetail';
 import Login from './pages/Login';
 import './styles/globals.css';
 import ModelManagement from './pages/ModelManagement';
+import Reports from './pages/Reports';
 
 function ProtectedLayout({ theme, onThemeToggle }) {
   const { user, logout, loading } = useAuth();
@@ -43,6 +44,7 @@ function ProtectedLayout({ theme, onThemeToggle }) {
           <Route path="/patients/:id"   element={<PatientDetail />} />
           <Route path="/anomalies"      element={<Anomalies />} />
           <Route path="/model"          element={<ModelManagement />} />
+          <Route path="/reports"        element={<Reports />} />
         </Routes>
       </main>
     </div>
