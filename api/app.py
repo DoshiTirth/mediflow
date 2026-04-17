@@ -7,6 +7,7 @@ from api.routes.anomalies import anomalies_bp
 from api.routes.auth import auth_bp
 import os
 from dotenv import load_dotenv
+from api.routes.reports import reports_bp
 
 load_dotenv()
 
@@ -36,6 +37,7 @@ def create_app():
     app.register_blueprint(patients_bp,  url_prefix='/api')
     app.register_blueprint(vitals_bp,    url_prefix='/api')
     app.register_blueprint(anomalies_bp, url_prefix='/api')
+    app.register_blueprint(reports_bp, url_prefix='/api')
 
     @app.route('/api/health', methods=['GET'])
     def health():

@@ -1,4 +1,4 @@
-# ─── Python ───────────────────────────────────────────
+# Python 
 __pycache__/
 *.py[cod]
 *.pyo
@@ -9,43 +9,43 @@ dist/
 build/
 .eggs/
 
-# ─── Virtual Environment ──────────────────────────────
+# Virtual Environment
 venv/
 env/
 .env
 .env.local
 .env.production
 
-# ─── Anaconda ─────────────────────────────────────────
+# Anaconda 
 *.conda
 conda-meta/
 
-# ─── ML Models (too large for GitHub) ─────────────────
+# ML Models (too large for GitHub)
 ml/model/*.pkl
 ml/model/*.joblib
 ml/model/*.h5
 ml/model/*.pt
 ml/model/*.bin
 
-# ─── Synthea Data (generated CSVs, not committed) ─────
+# Synthea Data (generated CSVs, not committed)
 data_generation/output/
 data_generation/*.csv
 data_generation/*.json
 data_generation/*.ndjson
 
-# ─── Database ─────────────────────────────────────────
+# Database
 *.mdf
 *.ldf
 *.bak
 
-# ─── Node / React ─────────────────────────────────────
+# Node / React
 node_modules/
 frontend/dist/
 frontend/build/
 frontend/.env.local
 frontend/.env
 
-# ─── IDE / OS ─────────────────────────────────────────
+# IDE / OS
 .vscode/
 .idea/
 *.suo
@@ -53,6 +53,6 @@ frontend/.env
 .DS_Store
 Thumbs.db
 
-# ─── Logs ─────────────────────────────────────────────
+# Logs
 *.log
 logs/
