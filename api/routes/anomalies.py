@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, request
 from api.services.db import fetch_all, fetch_one, execute
 from api.services.ai import explain_anomaly, get_patient_summary
 from datetime import date
+from flask_jwt_extended import jwt_required
 
 anomalies_bp = Blueprint('anomalies', __name__)
 
@@ -16,6 +17,7 @@ def calculate_age(birth_date):
 
 
 @anomalies_bp.route('/anomalies', methods=['GET'])
+@jwt_required()
 def get_anomalies():
     page     = int(request.args.get('page', 1))
     per_page = int(request.args.get('per_page', 20))
@@ -78,6 +80,7 @@ def get_anomalies():
 
 
 @anomalies_bp.route('/anomalies/summary', methods=['GET'])
+@jwt_required()
 def get_anomalies_summary():
     summary = fetch_all("""
         SELECT
@@ -99,6 +102,7 @@ def get_anomalies_summary():
 
 
 @anomalies_bp.route('/anomalies/<int:anomaly_id>/explain', methods=['POST'])
+@jwt_required()
 def explain(anomaly_id):
     anomaly = fetch_one("""
         SELECT
@@ -143,6 +147,7 @@ def explain(anomaly_id):
 
 
 @anomalies_bp.route('/anomalies/<int:anomaly_id>/review', methods=['PATCH'])
+@jwt_required()
 def mark_reviewed(anomaly_id):
     execute("""
         UPDATE anomalies SET is_reviewed = 1
@@ -152,6 +157,7 @@ def mark_reviewed(anomaly_id):
 
 
 @anomalies_bp.route('/patients/<patient_id>/summary', methods=['POST'])
+@jwt_required()
 def patient_summary(patient_id):
     patient = fetch_one("""
         SELECT patient_id, first_name, last_name, birth_date, gender
@@ -185,6 +191,7 @@ def patient_summary(patient_id):
     return jsonify({'summary': summary, 'patient_id': patient_id})
 
 @anomalies_bp.route('/anomalies/trends', methods=['GET'])
+@jwt_required()
 def get_anomaly_trends():
     period = request.args.get('period', 'monthly').strip()
 

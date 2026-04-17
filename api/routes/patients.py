@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 from api.services.db import fetch_all, fetch_one
 from datetime import date
+from flask_jwt_extended import jwt_required
 
 patients_bp = Blueprint('patients', __name__)
 
@@ -15,6 +16,7 @@ def calculate_age(birth_date):
 
 
 @patients_bp.route('/patients', methods=['GET'])
+@jwt_required()
 def get_patients():
     page     = int(request.args.get('page', 1))
     per_page = int(request.args.get('per_page', 20))
@@ -76,6 +78,7 @@ def get_patients():
 
 
 @patients_bp.route('/patients/<patient_id>', methods=['GET'])
+@jwt_required()
 def get_patient(patient_id):
     patient = fetch_one("""
         SELECT

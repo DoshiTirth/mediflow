@@ -1,10 +1,12 @@
 from flask import Blueprint, jsonify, request
 from api.services.db import fetch_all, fetch_one
+from flask_jwt_extended import jwt_required
 
 vitals_bp = Blueprint('vitals', __name__)
 
 
 @vitals_bp.route('/patients/<patient_id>/vitals', methods=['GET'])
+@jwt_required()
 def get_patient_vitals(patient_id):
     limit = int(request.args.get('limit', 50))
 
@@ -31,6 +33,7 @@ def get_patient_vitals(patient_id):
 
 
 @vitals_bp.route('/vitals/stats', methods=['GET'])
+@jwt_required()
 def get_vitals_stats():
     stats = fetch_one("""
         SELECT

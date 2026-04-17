@@ -9,3 +9,5 @@ joblib==1.4.2
 anthropic==0.26.0
 python-dotenv==1.0.1
 requests==2.31.0
+flask-jwt-extended==4.6.0
+bcrypt==4.1.2
