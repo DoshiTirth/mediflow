@@ -9,8 +9,17 @@
 [![Tests](https://img.shields.io/badge/Tests-49%20passing-1D9E75?style=flat)](tests/)
 
 Clinical data pipeline with ensemble anomaly detection and AI-powered insights. Ingests synthetic patient data, detects vital sign anomalies using three unsupervised ML models with majority voting, and surfaces Claude AI explanations through a secure REST API and React dashboard.
+---
 
-> **Demo:** [Watch on YouTube](#)
+> **Demo:**
+
+
+
+https://github.com/user-attachments/assets/68e251b7-9325-4c2b-bc9b-8534be8d0cd5
+
+
+
+> ---
 
 ![MediFlow Dashboard](docs/dashboard.png)
 
